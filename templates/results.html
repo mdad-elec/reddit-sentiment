@@ -1,0 +1,147 @@
+<!-- templates/results.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results</title>
+    <style>
+        /* Styles for side-by-side images */
+        .image-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+        .image-container div {
+            flex: 1 1 45%;
+            margin: 10px;
+            text-align: center;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+        }
+        /* Media query for mobile devices */
+        @media (max-width: 768px) {
+            .image-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .image-container div {
+                flex: 1 1 100%;
+                margin: 10px 0;
+            }
+        }
+        /* Styles for the circular progress bar */
+        .progress-circle {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 20px auto;
+        }
+        .progress-circle svg {
+            transform: rotate(-90deg);
+        }
+        .progress-circle .circle-bg,
+        .progress-circle .circle {
+            fill: none;
+            stroke-width: 10; /* Adjusted stroke width */
+            stroke-linecap: round;
+        }
+        .progress-circle .circle-bg {
+            stroke: #e6e6e6;
+        }
+        .progress-circle .percentage {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        /* Center the progress circle */
+        .progress-container {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <a href="/">Back to Home</a>
+    <h1>Analysis Results for "{{ request.form.get('brand_name') }}"</h1>
+
+    <div class="progress-container">
+        <h2>Overall Sentiment</h2>
+        <div>{{overall_sentiment_label}}</div>
+        <div class="progress-circle">
+            <svg width="150" height="150">
+                <circle class="circle-bg" cx="75" cy="75" r="60"></circle>
+                <circle class="circle" cx="75" cy="75" r="60"></circle>
+            </svg>
+            <div class="percentage">{{ overall_sentiment_percentage }}%</div>
+        </div>
+    </div>
+
+    <div class="image-container">
+        <div>
+            <h3>Sentiment Over Time</h3>
+            <img src="data:image/png;base64,{{ plot_url }}" alt="Sentiment Over Time Graph">
+        </div>
+        <div>
+            <h3>Most Common Words</h3>
+            <img src="data:image/png;base64,{{ wc_plot_url }}" alt="Word Cloud">
+        </div>
+    </div>
+
+    <h3>Individual Tweet Analysis</h3>
+    <button id="toggle-tweets-button">Show Individual Posts</button>
+    
+    <div id="tweet-list" style="display: none;">
+        <ul>
+            {% for tweet in tweets %}
+                <li>
+                    <strong>Text:</strong> {{ tweet.text }} <br>
+                    <strong>Date:</strong> {{ tweet.date }} <br>
+                    <strong>Vote:</strong> {{ tweet.vote }} <br>
+                    <strong>Sentiment:</strong> {{ tweet.sentiment_label }} <br>
+                    <strong>Sentiment Score:</strong> {{ tweet.sentiment_score }}%
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    
+    <script>
+        // JavaScript to set the progress circle stroke offset and color
+        (function() {
+            var overallPercentage = "{{ overall_sentiment_percentage }}";
+            var sentimentColor = "{{ sentiment_color }}";
+            var circle = document.querySelector('.progress-circle .circle');
+            var radius = 60; // Updated radius
+            var circumference = 2 * Math.PI * radius;
+            circle.style.strokeDasharray = circumference;
+            circle.style.strokeDashoffset = circumference;
+            circle.style.stroke = sentimentColor;
+
+            var offset = circumference - (overallPercentage / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+        })();
+
+        // JavaScript to toggle the display of the tweet list
+        document.getElementById('toggle-tweets-button').addEventListener('click', function() {
+            var tweetList = document.getElementById('tweet-list');
+            if (tweetList.style.display === 'none') {
+                tweetList.style.display = 'block';
+                this.textContent = 'Hide Individual Posts';
+            } else {
+                tweetList.style.display = 'none';
+                this.textContent = 'Show Individual Posts';
+            }
+        });
+    </script>
+</body> 
+</html>
