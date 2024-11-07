@@ -156,7 +156,7 @@ def analyze():
         tweets=analyzed_tweets,
         overall_sentiment_label=overall_sentiment_label,
         overall_sentiment_score=overall_sentiment,
-        overall_sentiment_percentage=int(round(abs(overall_sentiment) * 100)),
+        overall_sentiment_percentage=round((overall_sentiment) * 100)/100,
         sentiment_color=sentiment_color,
         plot_url=plot_url,
         wc_plot_url=wc_plot_url
