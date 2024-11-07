@@ -75,14 +75,13 @@
     <h1>Analysis Results for "{{ request.form.get('brand_name') }}"</h1>
 
     <div class="progress-container">
-        <h2>Overall Sentiment</h2>
         <div>{{overall_sentiment_label}}</div>
         <div class="progress-circle">
             <svg width="150" height="150">
                 <circle class="circle-bg" cx="75" cy="75" r="60"></circle>
                 <circle class="circle" cx="75" cy="75" r="60"></circle>
             </svg>
-            <div class="percentage">{{ overall_sentiment_percentage }}%</div>
+            <div class="percentage">{{ overall_sentiment_percentage }}</div>
         </div>
     </div>
 
@@ -108,7 +107,7 @@
                     <strong>Date:</strong> {{ tweet.date }} <br>
                     <strong>Vote:</strong> {{ tweet.vote }} <br>
                     <strong>Sentiment:</strong> {{ tweet.sentiment_label }} <br>
-                    <strong>Sentiment Score:</strong> {{ tweet.sentiment_score }}%
+                    <strong>Sentiment Score:</strong> {{ tweet.sentiment_score }}
                 </li>
             {% endfor %}
         </ul>
@@ -127,7 +126,7 @@
             circle.style.strokeDashoffset = circumference;
             circle.style.stroke = sentimentColor;
 
-            var offset = circumference - (overallPercentage / 100) * circumference;
+            var offset = circumference - (overallPercentage) * circumference;
             circle.style.strokeDashoffset = offset;
         })();
 
