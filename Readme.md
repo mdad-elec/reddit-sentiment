@@ -115,5 +115,4 @@ WordCloud: Library for generating word cloud images.
 
 Flask: Python web framework for building the web application.
 
-Community: Thanks to all contributors and users who have provided feedback and support.
 
